@@ -1,0 +1,8 @@
+.ContactsList{
+   margin-right: auto;
+   margin-left: auto;
+}
+.ContactsItem{
+    display: flex;
+    justify-content: space-between;
+}
