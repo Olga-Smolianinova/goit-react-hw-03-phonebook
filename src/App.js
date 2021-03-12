@@ -18,6 +18,35 @@ class App extends Component {
     filter: '',
   };
 
+  // LOCAL STORAGE И ЖИЗНЕННЫЕ ЦИКЛЫ
+  componentDidMount() {
+    // console.log('Mount component');
+
+    // записываем contacts как ключ в local Storage
+    const contacts = localStorage.getItem('contacts');
+    // console.log(contacts);
+
+    // преобразуем в формат JSON
+    const parsedContacts = JSON.parse(contacts);
+    // console.log(parsedContacts);
+
+    //сохраняем в localStorage новые contacts поверх предыдущих и проверяем на null. если есть contacts, т.е. массив не пустой, то пишем их в  localStorage
+    if (parsedContacts) {
+      this.setState({ contacts: parsedContacts });
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    // console.log('Update component');
+
+    //обязательно сравниваем предыдущее значение contacts c текущим, если неравно, то обновляем все contacts. Это делается, чтобы не зациклить компонент
+    if (this.state.contacts !== prevState.contacts) {
+      // при каждом обновлении contacts массив contacts, приводим к строке и полностью перезаписываем contacts  в local Storage
+      localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
+    }
+  }
+
+  // МЕТОДЫ
   // чтобы при отравке (submit) формы получить доступ к state из ContactForm.js. Это можно сделать через props. В параметрах деструктуризуруем ключи name,number из state
 
   // во время submit ContactForm нужно получить из нее данные, чтобы добавить  еще один contacts с ее данными. Передаем этом метод с помощью prop для ContactsForm
@@ -76,11 +105,12 @@ class App extends Component {
     return (
       <div className="App">
         <h1>Phonebook</h1>
-        {/* ContactsForm чтобы при отравке (submit) формы получить доступ к state из Form.js добавляем prop onSubmit методом для этого */}
 
+        {/* ContactsForm чтобы при отравке (submit) формы получить доступ к state из Form.js добавляем prop onSubmit методом для этого */}
         <ContactsForm onSubmit={this.addContact} />
 
         <h2>Contacts</h2>
+
         {/* Filter */}
         <Filter value={this.state.filter} onChange={this.changeFilter} />
 
